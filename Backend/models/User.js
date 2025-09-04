@@ -1,19 +1,27 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    role: { type: String, enum: ["employee", "office"], required: true },
-    // officeLocation only used for office accounts
-    officeLocation: {
-      latitude: Number,
-      longitude: Number,
-      radiusMeters: { type: Number, default: 100 }
-    }
-  },
-  { timestamps: true }
-);
+const officeLocationSchema = new mongoose.Schema({
+  latitude: Number,
+  longitude: Number,
+  radiusMeters: Number,
+});
+
+const attendanceRuleSchema = new mongoose.Schema({
+  startTime: String,
+  endTime: String,
+  lateAfter: Number,
+  weeklyOff: String,
+});
+
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: { type: String, unique: true },
+  password: String,
+  role: { type: String, enum: ["employee", "office"], default: "employee" },
+  companyName: String,
+  address: String,
+  officeLocation: officeLocationSchema,
+  attendanceRules: attendanceRuleSchema,
+});
 
 export default mongoose.model("User", userSchema);
