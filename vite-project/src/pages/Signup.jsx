@@ -1,140 +1,44 @@
-import { useState } from "react";
-import api from "../lib/api";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-export default function Signup() {
-  const [role, setRole] = useState("company"); // default company
-  const [form, setForm] = useState({
-    companyName: "",
-    companyEmail: "",
-    companyPassword: "",
-    employeeName: "",
-    employeeEmail: "",
-    employeePassword: "",
-    employeePhone: "",
-  });
-  const [message, setMessage] = useState("");
+const Signup = () => {
+  const nav = useNavigate();
+  const [form, setForm] = useState({ name: "", email: "", password: "", phone: "", role: "employee" });
 
-  const onChange = (e) =>
-    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const submit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     try {
-      let res;
-      if (role === "company") {
-        res = await api.post("/auth/company/signup", {
-          companyName: form.companyName,
-          companyEmail: form.companyEmail,
-          companyPassword: form.companyPassword,
-        });
-      } else {
-        res = await api.post("/auth/employee/signup", {
-          employeeName: form.employeeName,
-          employeeEmail: form.employeeEmail,
-          employeePassword: form.employeePassword,
-          employeePhone: form.employeePhone,
-        });
-      }
-      setMessage(res.data.message);
-    } catch (err) {
-      setMessage(err.response?.data?.message || "Error occurred");
+      const res = await axios.post("http://localhost:5000/api/auth/signup", form);
+      if(res.data.role === "admin") nav("/admin");
+      else nav("/employee");
+    } catch(err) {
+      alert(err.response.data.message);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4 text-center">Signup</h2>
+    <div className="flex justify-center items-center h-screen bg-gray-100">
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-full max-w-sm">
+        <h2 className="text-2xl mb-4">Signup</h2>
 
-        {/* Toggle Buttons */}
-        <div className="flex justify-center mb-4">
-          <button
-            onClick={() => setRole("company")}
-            className={`px-4 py-2 rounded-l ${role === "company" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
-          >
-            Company
-          </button>
-          <button
-            onClick={() => setRole("employee")}
-            className={`px-4 py-2 rounded-r ${role === "employee" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
-          >
-            Employee
-          </button>
-        </div>
+        <select name="role" value={form.role} onChange={handleChange} className="w-full mb-2 p-2 border rounded">
+          <option value="employee">Employee</option>
+          <option value="admin">Admin</option>
+        </select>
 
-        {/* Form */}
-        <form onSubmit={submit} className="space-y-3">
-          {role === "company" ? (
-            <>
-              <input
-                name="companyName"
-                value={form.companyName}
-                onChange={onChange}
-                placeholder="Company Name"
-                className="w-full border p-2 rounded"
-              />
-              <input
-                name="companyEmail"
-                value={form.companyEmail}
-                onChange={onChange}
-                placeholder="Company Email"
-                className="w-full border p-2 rounded"
-              />
-              <input
-                type="password"
-                name="companyPassword"
-                value={form.companyPassword}
-                onChange={onChange}
-                placeholder="Company Password"
-                className="w-full border p-2 rounded"
-              />
-            </>
-          ) : (
-            <>
-              <input
-                name="employeeName"
-                value={form.employeeName}
-                onChange={onChange}
-                placeholder="Employee Name"
-                className="w-full border p-2 rounded"
-              />
-              <input
-                name="employeeEmail"
-                value={form.employeeEmail}
-                onChange={onChange}
-                placeholder="Employee Email"
-                className="w-full border p-2 rounded"
-              />
-              <input
-                type="password"
-                name="employeePassword"
-                value={form.employeePassword}
-                onChange={onChange}
-                placeholder="Employee Password"
-                className="w-full border p-2 rounded"
-              />
-              <input
-                name="employeePhone"
-                value={form.employeePhone}
-                onChange={onChange}
-                placeholder="Phone Number"
-                className="w-full border p-2 rounded"
-              />
-            </>
-          )}
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-          >
-            Register
-          </button>
-        </form>
-
-        {message && (
-          <div className="mt-4 text-center text-sm text-green-600">{message}</div>
+        <input type="text" name="name" placeholder="Name" value={form.name} onChange={handleChange} className="w-full mb-2 p-2 border rounded" required />
+        <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} className="w-full mb-2 p-2 border rounded" required />
+        <input type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange} className="w-full mb-2 p-2 border rounded" required />
+        {form.role === "employee" && (
+          <input type="text" name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} className="w-full mb-2 p-2 border rounded" />
         )}
-      </div>
+        <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">Signup</button>
+      </form>
     </div>
   );
-}
+};
+
+export default Signup;

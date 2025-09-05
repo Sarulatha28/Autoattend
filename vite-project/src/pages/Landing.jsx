@@ -1,15 +1,29 @@
-import { Link } from "react-router-dom";
-export default function Landing(){
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
+const Landing = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="h-screen flex items-center justify-center bg-white">
-      <div className="p-8 rounded-lg shadow max-w-md text-center">
-        <h1 className="text-2xl font-bold mb-4">AutoAttend</h1>
-        <p className="text-gray-600 mb-6">Automatic attendance with geofencing</p>
-        <div className="flex justify-center gap-4">
-          <Link to="/signin" className="px-4 py-2 bg-blue-600 text-white rounded">Sign In</Link>
-          <Link to="/signup" className="px-4 py-2 bg-gray-800 text-white rounded">Sign Up</Link>
-        </div>
+    <div className="h-screen flex flex-col justify-center items-center bg-gradient-to-r from-blue-400 to-purple-500 text-white">
+      <h1 className="text-4xl font-bold mb-6">Welcome to Company Portal</h1>
+      <p className="mb-8 text-lg">Manage employees and admin access easily.</p>
+      <div className="flex gap-4">
+        <button
+          onClick={() => navigate("/signup")}
+          className="bg-white text-blue-500 px-6 py-3 rounded font-semibold hover:bg-gray-100 transition"
+        >
+          Signup
+        </button>
+        <button
+          onClick={() => navigate("/signin")}
+          className="bg-white text-purple-500 px-6 py-3 rounded font-semibold hover:bg-gray-100 transition"
+        >
+          Signin
+        </button>
       </div>
     </div>
   );
-}
+};
+
+export default Landing;

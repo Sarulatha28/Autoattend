@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: "http://localhost:5000", // backend URL
-});
+const API = axios.create({ baseURL: "http://localhost:5000/auth" });
 
-export default api;
+export const signup = (data) => API.post("/signup", data);
+export const signin = (data) => API.post("/signin", data);
