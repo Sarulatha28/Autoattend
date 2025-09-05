@@ -1,13 +1,13 @@
-
-
-
-// Backend/routes/auth.js
 import express from "express";
-import { signup,signin } from "../controllers/authController.js";
+import { signupCompany, signupEmployee, signin } from "../controllers/authController.js";
 
 const router = express.Router();
 
-router.post("/signup", signup);
+// Signup routes
+router.post("/company/signup", signupCompany);
+router.post("/employee/signup", signupEmployee);
+
+// **Single signin for both roles**
 router.post("/signin", signin);
 
 export default router;

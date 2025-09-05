@@ -6,7 +6,7 @@ export const auth = (req, res, next) => {
     const token = header.startsWith("Bearer ") ? header.slice(7) : null;
     if (!token) return res.status(401).json({ message: "No token provided" });
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret");
     req.user = decoded; // { id, role }
     next();
   } catch (e) {

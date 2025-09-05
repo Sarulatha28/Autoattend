@@ -1,24 +1,22 @@
 import User from "../models/User.js";
-import bcrypt from "bcryptjs";
 
-// Admin creates employees
-export const addEmployee = async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-    const exists = await User.findOne({ email });
-    if (exists) return res.status(400).json({ message: "Email already used" });
-    const hashed = await bcrypt.hash(password, 10);
-    const user = await User.create({ name, email, password: hashed, role: "employee" });
-    res.json({ success: true, user });
-  } catch (e) {
-    res.status(500).json({ success: false, message: e.message });
-  }
+export const me = async (req, res) => {
+  const u = await User.findById(req.user.id).lean();
+  if (!u) return res.status(404).json({ message: "Not found" });
+  res.json({ user: u });
 };
 
 export const listEmployees = async (req, res) => {
+  const employees = await User.find({ role: "employee" }).lean();
+  res.json({ employees });
+};
+
+export const addEmployee = async (req, res) => {
   try {
-    const users = await User.find({ role: "employee" }).select("_id name email createdAt");
-    res.json(users);
+    const { name, email, password } = req.body;
+    const user = new User({ name, email, password, role: "employee" });
+    await user.save();
+    res.json({ success: true, message: "Employee added" });
   } catch (e) {
     res.status(500).json({ success: false, message: e.message });
   }
@@ -27,18 +25,12 @@ export const listEmployees = async (req, res) => {
 export const setOfficeLocation = async (req, res) => {
   try {
     const { latitude, longitude, radiusMeters } = req.body;
-    const officeId = req.user.id;
-    const updated = await User.findByIdAndUpdate(officeId, { officeLocation: { latitude, longitude, radiusMeters } }, { new: true });
-    res.json({ success: true, office: updated });
-  } catch (e) {
-    res.status(500).json({ success: false, message: e.message });
-  }
-};
-
-export const me = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select("-password");
-    res.json(user);
+    const updated = await User.findByIdAndUpdate(
+      req.user.id,
+      { officeLocation: { latitude, longitude, radiusMeters } },
+      { new: true }
+    );
+    res.json({ success: true, officeLocation: updated.officeLocation });
   } catch (e) {
     res.status(500).json({ success: false, message: e.message });
   }
