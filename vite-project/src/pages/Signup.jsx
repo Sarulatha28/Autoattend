@@ -1,41 +1,97 @@
+// src/pages/Signup.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Signup = () => {
   const nav = useNavigate();
-  const [form, setForm] = useState({ name: "", email: "", password: "", phone: "", role: "employee" });
+  const [form, setForm] = useState({
+    companyName: "",
+    companyEmail: "",
+    companyId: "",
+    password: "",
+  });
 
-  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/signup", form);
-      if(res.data.role === "admin") nav("/admin");
-      else nav("/employee");
-    } catch(err) {
-      alert(err.response.data.message);
+      await axios.post("http://localhost:5000/api/auth/signup", {
+        ...form,
+        role: "admin", // force admin role
+        deviceId: navigator.userAgent,
+      });
+
+      alert("Company registered successfully! Please login.");
+      nav("/signin");
+    } catch (err) {
+      alert(err?.response?.data?.message || "Signup failed");
     }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-full max-w-sm">
-        <h2 className="text-2xl mb-4">Signup</h2>
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded shadow-md w-full max-w-sm"
+      >
+        <h2 className="text-2xl mb-4 font-bold text-center">Company Sign Up</h2>
 
-        <select name="role" value={form.role} onChange={handleChange} className="w-full mb-2 p-2 border rounded">
-          <option value="employee">Employee</option>
-          <option value="admin">Admin</option>
-        </select>
+        <input
+          type="text"
+          name="companyName"
+          placeholder="Company Name"
+          value={form.companyName}
+          onChange={handleChange}
+          className="w-full mb-2 p-2 border rounded"
+          required
+        />
 
-        <input type="text" name="name" placeholder="Name" value={form.name} onChange={handleChange} className="w-full mb-2 p-2 border rounded" required />
-        <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} className="w-full mb-2 p-2 border rounded" required />
-        <input type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange} className="w-full mb-2 p-2 border rounded" required />
-        {form.role === "employee" && (
-          <input type="text" name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} className="w-full mb-2 p-2 border rounded" />
-        )}
-        <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">Signup</button>
+        <input
+          type="email"
+          name="companyEmail"
+          placeholder="Company Email"
+          value={form.companyEmail}
+          onChange={handleChange}
+          className="w-full mb-2 p-2 border rounded"
+          required
+        />
+
+        <input
+          type="text"
+          name="companyId"
+          placeholder="Company ID (e.g. C001)"
+          value={form.companyId}
+          onChange={handleChange}
+          className="w-full mb-2 p-2 border rounded"
+          required
+        />
+
+        <input
+          type="password"
+          name="password"
+          placeholder="Company Password"
+          value={form.password}
+          onChange={handleChange}
+          className="w-full mb-2 p-2 border rounded"
+          required
+        />
+
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+        >
+          Register Company
+        </button>
+
+        <p className="mt-4 text-center">
+          Already have an account?{" "}
+          <a href="/signin" className="text-green-500 hover:underline">
+            Sign In
+          </a>
+        </p>
       </form>
     </div>
   );
