@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import Navbar from "../components/Navbar";
 
 export default function AddEmployeeForm({ onClose }) {
   const [formData, setFormData] = useState({});
@@ -20,25 +21,103 @@ export default function AddEmployeeForm({ onClose }) {
   };
 
   return (
-    <div className="p-6 bg-white shadow rounded w-full max-w-lg mx-auto">
-      <h2 className="text-xl font-bold mb-4">Add Employee</h2>
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <input name="name" onChange={handleChange} placeholder="Name" className="border p-2 w-full" />
-        <input name="email" onChange={handleChange} placeholder="Email" className="border p-2 w-full" />
-        <input name="employeeId" onChange={handleChange} placeholder="Employee ID" className="border p-2 w-full" />
-        <input name="companyId" onChange={handleChange} placeholder="Company ID" className="border p-2 w-full" />
-        <input name="age" onChange={handleChange} placeholder="Age" className="border p-2 w-full" />
-        <select name="gender" onChange={handleChange} className="border p-2 w-full">
-          <option>Male</option><option>Female</option><option>Other</option>
-        </select>
-        <input type="date" name="dob" onChange={handleChange} className="border p-2 w-full" />
-        <input type="date" name="joiningDate" onChange={handleChange} className="border p-2 w-full" />
-        <input name="aadhaar" onChange={handleChange} placeholder="Aadhaar" className="border p-2 w-full" />
-        <input name="bankAccNum" onChange={handleChange} placeholder="Bank Account No" className="border p-2 w-full" />
-        <input name="ifscCode" onChange={handleChange} placeholder="IFSC Code" className="border p-2 w-full" />
-        <input type="file" onChange={(e) => setPhoto(e.target.files[0])} />
-        <button className="bg-blue-600 text-white px-4 py-2 rounded">Add Employee</button>
-      </form>
+    <div className="min-h-screen bg-gray-100">
+      {/* ✅ Navbar stays fixed on top */}
+      <Navbar />
+
+      {/* ✅ Page content below navbar */}
+      <div className="pt-20 flex justify-center px-4">
+        <div className="w-full max-w-lg bg-white shadow-md rounded-lg p-6">
+          <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+            Add Employee
+          </h2>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              name="name"
+              onChange={handleChange}
+              placeholder="Name"
+              className="border p-2 w-full rounded"
+            />
+            <input
+              name="email"
+              onChange={handleChange}
+              placeholder="Email"
+              className="border p-2 w-full rounded"
+            />
+            <input
+              name="employeeId"
+              onChange={handleChange}
+              placeholder="Employee ID"
+              className="border p-2 w-full rounded"
+            />
+            <input
+              name="companyId"
+              onChange={handleChange}
+              placeholder="Company ID"
+              className="border p-2 w-full rounded"
+            />
+            <input
+              name="age"
+              onChange={handleChange}
+              placeholder="Age"
+              className="border p-2 w-full rounded"
+            />
+            <select
+              name="gender"
+              onChange={handleChange}
+              className="border p-2 w-full rounded"
+            >
+              <option value="">Select Gender</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+            <input
+              type="date"
+              name="dob"
+              onChange={handleChange}
+              className="border p-2 w-full rounded"
+            />
+            <input
+              type="date"
+              name="joiningDate"
+              onChange={handleChange}
+              className="border p-2 w-full rounded"
+            />
+            <input
+              name="aadhaar"
+              onChange={handleChange}
+              placeholder="Aadhaar"
+              className="border p-2 w-full rounded"
+            />
+            <input
+              name="bankAccNum"
+              onChange={handleChange}
+              placeholder="Bank Account No"
+              className="border p-2 w-full rounded"
+            />
+            <input
+              name="ifscCode"
+              onChange={handleChange}
+              placeholder="IFSC Code"
+              className="border p-2 w-full rounded"
+            />
+            <input
+              type="file"
+              onChange={(e) => setPhoto(e.target.files[0])}
+              className="border p-2 w-full rounded"
+            />
+
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+            >
+              Add Employee
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
